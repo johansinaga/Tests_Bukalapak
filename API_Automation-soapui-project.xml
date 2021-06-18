@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<con:soapui-project id="95823251-17cb-4918-bc7b-1f405a45a921" activeEnvironment="Default" name="API_Automation" resourceRoot="" soapui-version="5.6.0" abortOnError="false" runType="SEQUENTIAL" xmlns:con="http://eviware.com/soapui/config"><con:settings/><con:interface xsi:type="con:RestService" id="3c15b461-0445-471b-b5e4-f47be094a47b" wadlVersion="http://wadl.dev.java.net/2009/02" name="https://jsonplaceholder.cypress.io" type="rest" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:settings/><con:definitionCache type="TEXT" rootPart=""/><con:endpoints><con:endpoint>https://jsonplaceholder.cypress.io</con:endpoint></con:endpoints><con:resource name="Posts" path="/posts" id="0cab33f7-d316-42cf-8b28-4bf6074c606a"><con:settings/><con:parameters/><con:method name="GET Method" id="49b3cc57-c6a5-4a68-8b2c-66e99319bc36" method="GET"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>200</con:status><con:params/><con:element>Response</con:element></con:representation><con:request name="GET Request" id="726abed7-2549-43e3-bf97-9530e08e6883" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://jsonplaceholder.cypress.io</con:endpoint><con:request/><con:originalUri>https://jsonplaceholder.cypress.io/posts</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method><con:method name="POST Method" id="3b881703-96e1-495b-b400-c84bf2738d2a" method="POST"><con:settings/><con:parameters/><con:representation type="RESPONSE"><con:mediaType>application/json; charset=utf-8</con:mediaType><con:status>201</con:status><con:params/><con:element xmlns:pos="https://jsonplaceholder.cypress.io/posts">pos:Response</con:element></con:representation><con:representation type="REQUEST"><con:mediaType>application/json</con:mediaType><con:params/></con:representation><con:representation type="FAULT"><con:mediaType>text/html; charset=utf-8</con:mediaType><con:status>500</con:status><con:params/><con:element>html</con:element></con:representation><con:request name="POST Request" id="56c2bf32-61d7-43b1-b28b-5068811a1272" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://jsonplaceholder.cypress.io</con:endpoint><con:request/><con:originalUri>https://jsonplaceholder.cypress.io/posts</con:originalUri><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:request></con:method></con:resource></con:interface><con:testSuite id="b266749b-2768-42d0-89c1-7f47fbae9e1e" name="TestSuite API Automation"><con:settings/><con:runType>SEQUENTIAL</con:runType><con:testCase id="b0441657-42e8-46f3-bbc9-e51cae038cbd" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="a. TestCase for GET" searchProperties="true"><con:settings/><con:testStep type="restrequest" name="GET Request" id="bb4a8f26-cd8f-4713-8eba-07404ac4d189"><con:settings/><con:config service="https://jsonplaceholder.cypress.io" resourcePath="/posts" methodName="GET Method" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="GET Request" id="726abed7-2549-43e3-bf97-9530e08e6883" mediaType="application/json"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://jsonplaceholder.cypress.io</con:endpoint><con:request/><con:originalUri>https://jsonplaceholder.cypress.io/posts</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="e3a0ecef-f4fe-4e7f-b33e-8692579795f4" name="Validate status code 200 &quot;OK&quot;"><con:configuration><codes>200</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Validation Script" id="9efdb63c-7a84-4f70-ab3e-63fdc066de78"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+
+def response = context.expand( '${GET Request#Response}' )
+def elementsCount = new JsonSlurper().parseText(response).findAll { it }.size()
+def parsedResponse = parse(response)
+
+def element_id, element_userId, element_title, element_body
+
+for (i = 0; i &lt; elementsCount; i++)
+{
+	element_id = parsedResponse.read("\$..[${i}].id")
+	assert (element_id instanceof Integer) : "'id' in element number ${i+1} is not an Integer"
+	
+	element_userId = parsedResponse.read("\$..[${i}].userId")
+	assert (element_userId instanceof Integer) : "'userId' in element number ${i+1} is not an Integer"
+	
+	element_title = parsedResponse.read("\$..[${i}].title")
+	assert (element_title instanceof String) : "'title' in element number ${i+1} is not a String"
+	
+	element_body = parsedResponse.read("\$..[${i}].body")
+	assert (element_body instanceof String) : "'body' in element number ${i+1} is not a String"
+
+	log.info("Element number ${i+1} successfully tested!")
+}
+
+</script></con:config></con:testStep><con:properties/></con:testCase><con:testCase id="2620012c-192e-4bc5-bc0f-4609384d44ec" failOnError="true" failTestCaseOnErrors="true" keepSession="false" maxResults="0" name="b. TestCase for POST" searchProperties="true"><con:settings/><con:testStep type="properties" name="Properties" id="9710f2a5-db3a-4c23-aae1-e7a45804cfd6"><con:settings/><con:config xsi:type="con:PropertiesStep" saveFirst="true" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:properties><con:property><con:name>parm_value_title</con:name><con:value>recommendation</con:value></con:property><con:property><con:name>parm_value_body</con:name><con:value>motorcycle</con:value></con:property><con:property><con:name>parm_value_userId</con:name><con:value>12</con:value></con:property></con:properties></con:config></con:testStep><con:testStep type="restrequest" name="POST Request" id="4a2ad205-c745-432b-9736-77c41efdf049"><con:settings/><con:config service="https://jsonplaceholder.cypress.io" resourcePath="/posts" methodName="POST Method" xsi:type="con:RestRequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><con:restRequest name="POST Request" id="56c2bf32-61d7-43b1-b28b-5068811a1272" mediaType="application/json" postQueryString="false"><con:settings><con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting></con:settings><con:endpoint>https://jsonplaceholder.cypress.io</con:endpoint><con:request>{
+	"title": "${parm_value_title}",
+	"body": "${parm_value_body}",
+	"userId": ${parm_value_userId}
+}</con:request><con:originalUri>https://jsonplaceholder.cypress.io/posts</con:originalUri><con:assertion type="Valid HTTP Status Codes" id="873c8048-cb1a-41d2-9af5-5da8f0e34a29" name="Validate status code 201 &quot;Created&quot;"><con:configuration><codes>201</codes></con:configuration></con:assertion><con:credentials><con:authType>No Authorization</con:authType></con:credentials><con:jmsConfig JMSDeliveryMode="PERSISTENT"/><con:jmsPropertyConfig/><con:parameters/></con:restRequest></con:config></con:testStep><con:testStep type="groovy" name="Groovy Validation Script" id="7d842256-f0ad-433c-b858-621a0fef925a"><con:settings/><con:config><script>import groovy.json.JsonSlurper
+import static com.jayway.jsonpath.JsonPath.parse
+
+def response = context.expand( '${POST Request#Response}' )
+def elementsCount = new JsonSlurper().parseText(response).findAll { it }.size()
+def parsedResponse = parse(response)
+
+def expected_title = testRunner.testCase.testSteps['Properties'].getPropertyValue("parm_value_title")
+def expected_body = testRunner.testCase.testSteps['Properties'].getPropertyValue("parm_value_body")
+def expected_userId = testRunner.testCase.testSteps['Properties'].getPropertyValue("parm_value_userId") as int
+def expected_id = parsedResponse.read("\$.id")
+
+def returned_title = parsedResponse.read("\$.title")
+def returned_body = parsedResponse.read("\$.body")
+def returned_userId = parsedResponse.read("\$.userId")
+
+assert (expected_title == returned_title) : "Element 'title' does not match / does not exist in response"
+assert (expected_body == returned_body) : "Element 'body' does not match / does not exist in response"
+assert (expected_userId == returned_userId) : "Element 'userId' does not match / does not exist in response"
+assert (expected_id != null) : "Element 'id' does not exist in response"
+
+
+
+</script></con:config></con:testStep><con:properties/></con:testCase><con:properties/></con:testSuite><con:properties/><con:wssContainer/><con:oAuth2ProfileContainer/><con:oAuth1ProfileContainer/></con:soapui-project>
