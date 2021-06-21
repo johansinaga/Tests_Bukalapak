@@ -13,7 +13,7 @@
 
 
 
-## Web and Mobile Tests (TODO)
+## Web and Mobile Tests
 - Download latest Visual Studio
 - Download `Web_Automation` folder build run the `Web_Automation.sln` solution file via Visual Studio
 - Run test(s) from Test Explorer inside Visual Studio
